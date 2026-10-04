@@ -32,6 +32,7 @@ Which users are the most structurally important within the Bluesky interaction n
 
 > Note: RQ3 may be refined after the collected dataset and available variables are inspected.
 
+
 ## Project Folder Structure
 
 ### `data/`
@@ -67,6 +68,7 @@ Members:
 1. Herman
 2. Arend
 3. Tim
+
 ---
 
 # Project Folder Structure
@@ -87,6 +89,5 @@ social-web-analytics/
 ├── .gitignore
 ├── README.md
 └── social-web-analytics.Rproj
-
 
 
