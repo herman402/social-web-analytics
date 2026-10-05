@@ -17,7 +17,7 @@ The analysis will address the four required COMP3020 project components:
 - Network analysis
 
 ## Project Poster
-https://canva.link/bghqy20lexqted5
+https://canva.link/7njbn3vwf3z58ej
 
 ## Provisional Research Questions
 
