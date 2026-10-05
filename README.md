@@ -16,6 +16,9 @@ The analysis will address the four required COMP3020 project components:
 - Clustering
 - Network analysis
 
+## Project Poster
+https://canva.link/bghqy20lexqted5
+
 ## Provisional Research Questions
 
 **RQ1 - Text/Content Analysis**  
