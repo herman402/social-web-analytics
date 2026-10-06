@@ -12,13 +12,18 @@
 # Test whether receiving at least one like is associated
 # with the generative AI topic of a Bluesky post.
 #
-# Lecture / Lab Source:
+# Lecture:
 # Module 3 - Simple Exposure Analysis
 
+# Research Question:
+# Is receiving at least one like independent of the generative-AI topic 
+# ...being discussed (ChatGPT, Claude AI or Google Gemini)?
+
+# “We want to test whether the AI topic has any relationship with whether 
+# ...a post received at least one like.”
 
 # Load the raw Bluesky datasets
 load("data/raw/bluesky_raw_data.RData")
-
 
 # Create topic variable
 # This tells us whether each post belongs to ChatGPT, Claude or Gemini
@@ -121,6 +126,11 @@ chi_test
 # Therefore, there is not enough statistical evidence to say that receiving a like is associated 
 # ...with whether the post is about ChatGPT, Claude, or Gemini. So, H0 remains.
 
+# Additional: Show the p-value from the test
+chi_test$p.value
+
+# The p-value is approximately 0.054.
+# Since p > 0.05, we fail to reject H0.
 
 # Summary:
 # ChatGPT had the highest proportion of posts receiving at least one like
