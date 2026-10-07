@@ -4,6 +4,9 @@ library("tm")
 library("SnowballC")
 library("jsonlite")
 
+# Load data:
+load("data/raw/bluesky_raw_data.RData")
+
 # Text gathering:
 chatgpt_text = search_skeets_ChatGPT$text
 claude_text = search_skeets_Claude$text
