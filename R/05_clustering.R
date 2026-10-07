@@ -1,5 +1,6 @@
 # Load libraries:
 library("tm")
+library("dendextend")
 
 # Load processed data:
 load("data/processed/bluesky_processed_data.RData")
@@ -11,8 +12,8 @@ text_wtdm = weightTfIdf(text_tdm)
 text_matrix = t(as.matrix(text_wtdm))
 
 # Keep non-empty
-not_empties = which(rowSums(abs(text_matrix)) > 0)
-text_matrix = text_matrix[not_empties, ]
+empties = which(rowSums(abs(text_matrix)) == 0)
+text_matrix = text_matrix[-empties, ]
 
 set.seed(69)
 
@@ -81,4 +82,55 @@ for (i in 1:best_K) {
   print(sort(clusterTermWeight, decreasing = TRUE)[1:10])
 }
 
+# Hierarchical Clustering ====
+# Load raw data:
+load("data/raw/bluesky_raw_data.RData")
 
+# Extract texts only:
+chatGPT_text = search_skeets_ChatGPT$text
+claude_text = search_skeets_Claude$text
+gemini_text = search_skeets_Gemini$text
+
+posts = c(chatGPT_text, claude_text, gemini_text)
+
+# Selecting balanced sample:
+index = c(rep("CG", length(chatGPT_text)),
+          rep("CL", length(claude_text)),
+          rep("GE", length(gemini_text)))
+index = index[-empties]
+
+# Selecting the first 10 remaining posts of each group:
+id.CG = which(index == "CG")[1:10]
+id.CL = which(index == "CL")[1:10]
+id.GE = which(index == "GE")[1:10]
+
+new.matrix = text_matrix[c(id.CG, id.CL, id.GE), ]
+dim(new.matrix)
+
+# Normalising selected posts for cosine distances:
+norm.new.matrix = diag(1 / sqrt(rowSums(new.matrix ^ 2))) %*% new.matrix
+
+# Compare row names before restoration:
+head(rownames(new.matrix))
+head(rownames(norm.new.matrix))
+# Restore row names:
+rownames(norm.new.matrix) = rownames(new.matrix)
+head(rownames(norm.new.matrix))
+
+# Creating the Dendrogram:
+D = dist(norm.new.matrix, method = "euclidean") ^ 2 / 2 # cosine
+
+# Single hierarchical clustering:
+h = hclust(D, method = "single")
+
+# Apply colouring:
+palette(c("black", "orange", "blue"))
+dend = as.dendrogram(h)
+colours = as.numeric(c(rep(1, 10), rep(2, 10), rep(3, 10)))
+colours = colours[order.dendrogram(dend)]
+labels_colors(dend) = colours
+
+plot(dend, main = "Cluster Dendrogram")
+legend(x = "topright", 
+       legend = c("ChatGPT", "Claude", "Gemini"), 
+       col = c(1, 2, 3), pch = 20, ncol = 3, cex = 0.5)
