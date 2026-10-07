@@ -1,7 +1,6 @@
 # Load libraries:
 library("tm")
 library("cluster")
-library("wordcloud")
 
 # Load processed data:
 load("data/processed/bluesky_processed_data.RData")
@@ -75,15 +74,4 @@ for (i in 1:best_K) {
   clusterTermWeight = colMeans(clusterposts)
   print(clusterStr)
   print(sort(clusterTermWeight, decreasing = TRUE)[1:10])
-  
-  # Make wordcloud:
-  wordcloud(
-    words = names(clusterTermWeight),
-    freq = clusterTermWeight,
-    max.words = 100,
-    random.order = FALSE,
-    rot.per = 0.35,
-    colors = brewer.pal(8, "Dark2"),
-    scale = c(1, .5)
-    )
 }
