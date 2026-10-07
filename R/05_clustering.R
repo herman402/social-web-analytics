@@ -1,6 +1,5 @@
 # Load libraries:
 library("tm")
-library("cluster")
 
 # Load processed data:
 load("data/processed/bluesky_processed_data.RData")
@@ -14,6 +13,19 @@ text_matrix = t(as.matrix(text_wtdm))
 # Keep non-empty
 not_empties = which(rowSums(abs(text_matrix)) > 0)
 text_matrix = text_matrix[not_empties, ]
+
+set.seed(69)
+
+# Do elbow method:
+n = 15
+SSW = rep(0, n)
+
+for (a in 1:n) {
+  K = kmeans(text_matrix, a, nstart = 10) # K-Means
+  SSW[a] = K$tot.withinss # total within-cluster sum of squares
+}
+# Plot elbow:
+plot(1:n, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method")
 
 # Normalise to unit length:
 normalised_matrix = diag(1 / sqrt(rowSums(text_matrix ^ 2))) %*% text_matrix
@@ -32,23 +44,16 @@ dim(as.matrix(D))
 dim(mds.matrix)
 
 # Redo elbow method:
-n = 20
+n = 15
 SSW = rep(0, n)
-silhouette_scores = rep(0, n)
 for (a in 1:n) {
   K = kmeans(mds.matrix, a, nstart = 20) # K-Means
   SSW[a] = K$tot.withinss # total within-cluster sum of squares
-  
-  # Silhouette score: (to find best K)
-  if (a > 1) {
-    sil = silhouette(K$cluster, dist(mds.matrix))
-    silhouette_scores[a] = mean(sil[, 3])
-  }
 }
 # Plot elbow:
-best_K = which.max(silhouette_scores) # best amount of clusters
-plot(1:n, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method")
-abline(v = best_K, col = "red", lty = 2, lwd = 2)
+plot(1:n, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method (MDS)")
+
+best_K = 4 # select K from elbow
 
 # Plot clustering:
 K = kmeans(mds.matrix, best_K, nstart = 20)
@@ -75,3 +80,5 @@ for (i in 1:best_K) {
   print(clusterStr)
   print(sort(clusterTermWeight, decreasing = TRUE)[1:10])
 }
+
+
