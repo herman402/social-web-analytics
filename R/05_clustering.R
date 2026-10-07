@@ -1,5 +1,6 @@
 # Load libraries:
 library("tm")
+library("cluster")
 library("wordcloud")
 
 # Load processed data:
@@ -32,7 +33,7 @@ dim(as.matrix(D))
 dim(mds.matrix)
 
 # Redo elbow method:
-n = 15
+n = 20
 SSW = rep(0, n)
 silhouette_scores = rep(0, n)
 for (a in 1:n) {
@@ -47,7 +48,7 @@ for (a in 1:n) {
 }
 # Plot elbow:
 best_K = which.max(silhouette_scores) # best amount of clusters
-plot(1:15, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method")
+plot(1:n, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method")
 abline(v = best_K, col = "red", lty = 2, lwd = 2)
 
 # Plot clustering:
