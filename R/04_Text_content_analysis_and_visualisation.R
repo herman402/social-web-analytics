@@ -50,7 +50,6 @@ title("Most Frequent Words (Word Cloud)")
 # relate to interacting with the ai and the various ways that ai is used such as
 # "prompt", "check", "report", "help".
 
-
 # Second visualisation (TF-IDF Weighted Word Cloud)======================
 # Applying TF-IDF weighting to tdm
 M2 = as.matrix(weightTfIdf(tdm)) 
