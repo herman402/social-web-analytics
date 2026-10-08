@@ -54,7 +54,7 @@ for (a in 1:n) {
 # Plot elbow:
 plot(1:n, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method (MDS)")
 
-best_K = 4 # select K from elbow
+best_K = 5 # select K from elbow
 
 # Plot clustering:
 K = kmeans(mds.matrix, best_K, nstart = 20)
