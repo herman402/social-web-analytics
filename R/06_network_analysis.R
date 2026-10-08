@@ -20,9 +20,6 @@
 # Which users are the most structurally important within
 # ...a Bluesky follow network surrounding generative-AI discussions?
 
-# "In the network of Bluesky users connected through follow relationships, 
-# ...which users seem to have the most important positions?"
-
 # Network definition:
 # Node = a Bluesky user/account.
 # Edge = one user follows another user.
@@ -52,7 +49,7 @@ all_authors = unique(c(
 # Count the number of unique authors in the collected AI posts.
 length(all_authors)
 
-# Hence, there are 549 unique authors in our combined dataset sample.
+# Hence, there are 549 unique authors (our combined dataset).
 
 # Preview the first few authors.
 head(all_authors)
@@ -62,11 +59,7 @@ head(all_authors)
 
 # all_authors contains 549 unique Bluesky handles.
 # get_user_info() looks up each handle and returns profile information
-# such as:
-# - actor_handle
-# - actor_name
-# - followers_count
-# - follows_count
+# such as: actor_handle, actor_name, followers_count, follows_count.
 author_info = get_user_info(all_authors)
 # Check how many author profiles were returned.
 nrow(author_info)
@@ -97,7 +90,7 @@ top_candidates
 
 # Selecting the author with the highest follower count.
 # which.max() finds the position of the largest value inside the followers_count column.
-# We then use that position to retrieve the matching actor_handle.
+# We then use that position to retrieve the matching actor_handle (username).
 # This author becomes the seed user, meaning the user we start from when building the follow network.
 seed_user_handle = author_info$actor_handle[
   which.max(author_info$followers_count)
@@ -127,7 +120,7 @@ seed_user_handle
 # These users form the first level of connections in our network.
 friends_handles = get_follows(seed_user_handle, limit = 10)$actor_handle
 
-# Display the accounts followed by the seed user.
+# Display the accounts followed by the seed user (theGuardian.com).
 friends_handles
 
 # Check how many first-level users were returned.
@@ -151,7 +144,7 @@ more_friends = lapply(friends_handles, get_follows,limit = 20)
 more_friends_handles = lapply(more_friends,`[[`,"actor_handle")
 
 # Check how many second-level users were returned
-# for each of the 10 first-level accounts.
+# ...for each of the 10 first-level accounts.
 sapply(more_friends_handles, length)
 # This means, each of the 
 # First-level user 1 follows → 20 returned users
@@ -160,6 +153,7 @@ sapply(more_friends_handles, length)
 # First-level user 7 follows → 3
 # ...
 # First-level user 9 follows → 9
+
 
 
 # Create edges from the seed user to the 10 first-level users.
@@ -180,7 +174,7 @@ el_seed
 
 
 # Now creating the edges from each first-level user to their second-level users:
-# Create edges from each first-level user to the users they follow.
+# Creating edges from each first-level user to the users they follow.
 
 # seq_along(friends_handles) gives us the positions 1 to 10.
 # lapply() goes through each first-level user one at a time.
@@ -233,7 +227,7 @@ ecount(g)
 # The directed graph contains 177 users (nodes)
 # and 182 follow relationships (edges).
 # The graph was successfully created from the edge list.
-# Each displayed arrow represents the direction of a follow relationship.
+
 
 
 # Visualise the full directed follow network (Full Network)
@@ -268,7 +262,7 @@ plot(
   main = "Full Bluesky Follow Network"
 )
 
-# Add a key explaining the node colours.
+# Added a key explaining the node colours.
 legend(
   "topright",
   legend = c(
@@ -310,7 +304,7 @@ plot(
   g2,
   layout = layout_with_kk(g2),
   vertex.size = 15,
-  main = "Key Connected Users in the Bluesky Follow Network"
+  main = "Key Connected Users in the Bluesky Filtered Follow Network"
 )
 
 # Add a key explaining the node colours.
