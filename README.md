@@ -58,6 +58,9 @@ Stores graphs and visualisations created in R.
 ### `report/`
 Stores the R Markdown report and final PDF report.
 
+### `poster/`
+Stores the final poster files.
+
 ### `.gitignore`
 Prevents unnecessary or sensitive local files from being uploaded to GitHub.
 
@@ -85,6 +88,8 @@ social-web-analytics/
 ├── figures/
 │
 ├── report/
+│
+│── poster/
 │
 ├── .gitignore
 ├── README.md
