@@ -89,6 +89,8 @@ social-web-analytics/
 │
 ├── report/
 │
+│── poster/
+│
 ├── .gitignore
 ├── README.md
 └── social-web-analytics.Rproj
