@@ -127,8 +127,9 @@ names(search_skeets_ChatGPT)
 
 ```
 
-# Preview the first few records
-head(search_skeets_ChatGPT) #too long 
+#### Preview the first few records
+
+head(search_skeets_ChatGPT) # too long 
 
 ## Data Cleaning
 
@@ -177,7 +178,7 @@ corpus = tm_map(corpus, stemDocument)
 
 
 ```
-# Inspect corpus
+#### Inspect corpus
 inspect(corpus) #too long
 
 ```{r, eval=FALSE}
@@ -187,7 +188,7 @@ save(corpus, file = "data/processed/bluesky_processed_data.RData")
 
 # 2.2 Hypothesis Testing
 
-### Research Question
+## Research Question
 
 Is receiving at least one like independent of the generative-AI topic being discussed (ChatGPT, Claude AI or Google Gemini)?
 
@@ -313,19 +314,17 @@ The posts were collected over a short time window. Engagement may change over ti
 
 # 2.4 Clustering
 
-## Clustering
-
-### Brief
+## Brief
 
 This analysis aims to find out if Generative AI posts from Bluesky can be grouped into meaningful clusters based on similarities in their textual content. This involves the usage of clustering methods such as K-Means with the Elbow Method to show that clusters can be generated from the social media posts, and hierarchical clustering to further prove how those posts can be grouped into meaningful clusters at all.
 
-### K-Means Clustering
+## K-Means Clustering
 
 K-Means Clustering is a clustering method that allows similar data points to be grouped into separate clusters without needing much supervised data and works by identifying natural groups in any unlabelled datasets and groups points based on distance to cluster centres.
 
 This method was applied to Bluesky posts that had discourse about Generative AI through the usage of Term Document Matrices, TF-IDF weighting, the Elbow Method, and distance calculation using Cosine Distance in order to extract as clear of clusters as possible to prove that K-Means clustering can work in this dataset of posts.
 
-#### 4.1) Shaping the Data
+### 4.1) Shaping the Data
 
 To begin K-Means clustering, the processed corpus from the Bluesky posts were loaded into the environment in order to start shaping the data to be suitable for clustering. What was initially done was to create a Term Document Matrix off the corpus, then using TF-IDF weighting from the Document Matrix to better weigh word frequencies, and then shaping it to a matrix which is then stripped of empty frequencies.
 
@@ -350,7 +349,7 @@ empties = which(rowSums(abs(text_matrix)) == 0)
 text_matrix = text_matrix[-empties, ]
 ```
 
-#### 4.2) Elbow Method
+### 4.2) Elbow Method
 
 The elbow method is a visual method that is used in K-Means clustering in order to find the optimal amount of clusters (K) through how performance changes with each increasing k-value. For this dataset, the in-built K-Means function was used to check performance of K with the metric Total Within-cluster Sum of Squares (SSW) because SSW directly measures how compact the clusters are which is important to understanding if there are meaningful clusters that can be created. For this method, the matrix that was created will be used to check for clusters.
 
@@ -371,7 +370,7 @@ plot(1:n, SSW, type = "b", xlab = "K", main = "K-Means Elbow Method")
 
 As illustrated from the elbow method graph, the elbow begins to slow down at around K = 5, meaning that from the graph, the optimal amount of clusters for this dataset would be five clusters for the K-Means method of clustering.
 
-#### 4.3) K-Means with Cosine Distance
+### 4.3) K-Means with Cosine Distance
 
 Now that the amount of clusters to use for K-Means, the clustering of the Bluesky posts dataset can now be illustrated, but before that can happen - the distance has to be applied to clustering properly in order to show the clearest possible clusters possible. This can be done by first normalising document vector to unit length to prevent longer posts from appearing, then calculating cosine distance of the matrix in order to project to Euclidean geometry, which is done by classical multidimensional scaling (MDS) of the matrix of values above zero.
 
@@ -424,7 +423,7 @@ plot(mds2.matrix, col = K$cluster,
 
 From the visualisation, it illustrates that from the 5 clusters, there is little to no meaningful clusters that can be made based on similarities in their textual content as two of the clusters are basically outliers and the remaining clusters are very close together, suggesting that the clusters are very similar or very dissimilar to each other, with nothing between.
 
-#### 4.4) Examining K-Means Clusters
+### 4.4) Examining K-Means Clusters
 
 Now that the clusters have been made, in order to actually prove if there is meaningful clusters, the clusters itself have to be examined and checked for its contents also.
 
@@ -462,11 +461,11 @@ for (i in 1:best_K) {
 
 According to the top 10 words of each cluster, there exists separation between themes but there is not enough separation to confidently assign a theme to each cluster meaning that there is little to no evidence that meaningful themes can be made from just K-Means clustering.
 
-### Hierarchical Clustering
+## Hierarchical Clustering
 
 Hierarchical clustering is a method that groups data into a hierarchy of clusters that is based on how similar they are to each other and builds a dendrogram to visualise the relationship. This is another clustering method that will be applied to the Bluesky posts dataset through the sampling and normalisation of data to fit, calculation of cosine distance as the unit for clustering, and the variant of hierarchical clustering used will be single-linkage due to its ability to merge clusters based on similarity which is the goal of the analysis.
 
-#### 4.5) Data Preparation
+### 4.5) Data Preparation
 
 To begin Hierarchical Clustering, the data required for clustering to work would be need to be sampled which is done by selecting posts by group from the raw Bluesky posts data, extracting the raw text, then removing empty documents, and then selecting the first ten posts from each group. This allows a matrix to be created using the selected data which will be used for making the clusters in later steps.
 
@@ -512,7 +511,7 @@ rownames(norm.new.matrix) = rownames(new.matrix)
 head(rownames(norm.new.matrix))
 ```
 
-#### 4.6) Visualising Clusters
+### 4.6) Visualising Clusters
 
 After preparing the data, in order to execute hierarchical clustering by single-linkage, a distance matrix will have to be prepared using cosine distance off the normalised matrix in order to get the accurate distance of the Bluesky dataset. This will make the resulting plot be grouped by the most similar posts as the closest pair and the furthest pair will be the most dissimilar to each other which will visualise the clustering to be meaningful or not.
 
@@ -543,7 +542,7 @@ legend(x = "topright",
 
 From the clustering diagram, the posts do indicate some level of textual similarity but not very strong as the clusters from the dendrogram suggests a relatively weak level of similarity which do not form small numbers of clear, distinct groups which illustrates there is little to no evidence that meaningful groups can be formed by clustering from the Generative AI posts from both K-Means and Hierarchical clustering methods.
 
-#### 4.7) Examining Hierarchical Clusters
+### 4.7) Examining Hierarchical Clusters
 
 While looking at the Dendrogram gives a suggestion of the level of similarity, we wouldn't know unless we examine what type of posts are grouped.
 
@@ -567,7 +566,7 @@ posts[304]
 
 Upon inspection, both of these posts support the notion that textual similar does not imply the same theme which still implies the weak evidence of meaningful clusters being generated from generative-AI posts based on similar text content.
 
-### Clustering: Conclusion
+## Clustering: Conclusion
 
 The results from both K-Means and Hierarchical Clustering prove that there is limited evidence of that Generative-AI posts can be grouped based on meaningful clusters based on textual similarity at all. The clusters were not clear enough to reveal strongly separated groups which suggest that the posts did not divide into categories based on features during analysis. Therefore, the findings found that there was weak or potentially no evidence at all that meaningful clusters can exist from just textual similarity in the dataset. However, this doesn't mean that there are no meaningful clusters at all, just the features selected were insufficient for clustering to make clear, distinct groups in the first place.
 
@@ -581,7 +580,7 @@ A node represents a Bluesky user and a directed edge represents one user followi
 another. The graph is directed because User A following User B does not imply that
 User B follows User A.
 
-# Summary 
+## Summary 
 The network analysis constructed a directed Bluesky follow network using a friends-of-friends approach. The final network contained 177 users and 182 directed follow relationships, with a low density of 0.0058, indicating a sparse structure. Centrality analysis showed that bibivanderzee.bsky.social had the highest degree, while theguardian.com had the highest closeness and betweenness centrality. These results identify the most connected and structurally influential users within the sampled network.
 
 atrrr is used to access Bluesky data such as user profiles and follow relationships.
@@ -971,15 +970,15 @@ head(sort(betweenness(g, directed = TRUE), decreasing = TRUE), 5)
 ```
 theguardian.com had the highest betweenness score (323).
 
-# Network Analysis: Conclusion
+## Network Analysis: Conclusion
 Overall, the network analysis showed that a small number of users occupied more important structural positions, while most users had relatively few connections. However, the results are influenced by the sampled network design and selected seed user.
 
 
 
-# Overall Findings
+## Overall Findings
 
 
-# Limitations
+## Limitations
 
 ### Network Analysis Limitations
 
