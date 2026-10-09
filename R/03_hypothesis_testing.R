@@ -82,6 +82,14 @@ chi_test$observed
 # rowSums(tab) gives the total number of posts for each AI topic.
 like_percent = tab[, "TRUE"] / rowSums(tab) * 100
 
+barplot(
+  like_percent,
+  col = c("skyblue", "orange", "lightgreen"),
+  ylim = c(0, 45),
+  ylab = "Posts Receiving at Least One Like (%)",
+  xlab = "AI Topic",
+  main = "Posts Receiving at Least One Like"
+)
 like_percent
 
 # Results:
