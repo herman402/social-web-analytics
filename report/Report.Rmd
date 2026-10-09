@@ -302,6 +302,137 @@ The posts were collected over a short time window. Engagement may change over ti
 
 # 2.3 Text and Content Analysis
 
+## Section objective:
+This section is to explore the data and present the cleaned up data through visualisations for understanding the key topics of AI being discussed on Bluesky.
+
+```{r}
+library("wordcloud") 
+
+# Processed from previous section
+load("../data/processed/bluesky_processed_data.RData")
+corpus.text = sapply(corpus,as.character) 
+# Convert documents into text
+
+# Checking for NA
+sum(corpus.text == "NA") # Checking how many are "NA"
+NAcorpus = which(corpus.text == "NA")
+length(NAcorpus)
+newcorpus = corpus[-NAcorpus] # New corpus without NA
+
+# Preparing the creation of visualisations
+tdm = TermDocumentMatrix(newcorpus) 
+M = as.matrix(tdm)
+word.frequency = rowSums(M)
+```
+
+## Visualisation 1: Unweighted Wordcloud 
+
+The first visualisation will be an unweighted wordcloud displaying the most common words that appear in relation to posts about AI. This involves sorting the words to be descending order to find the most frequent words, and enlarging them to stand out. Theres an added minimum frequency to adjust for words that may only be mentioned few times to make sure that the data is reliable.
+
+```{r}
+# Doing wordcloud (First visualisation)
+word.frequency = sort(word.frequency, decreasing = TRUE)
+word.frequency[1:20]
+# Alot of the terms in the top 20 talk about ai with openai and anthropic
+# Words suggest that they discuss the capability of ai and the use of AI 
+# related tools.
+# Words such as "bill" and "percent" might also suggest discussions 
+# of statistics, costs and technology.
+
+### Most frequent Wordss (Unweighted Word)
+wordcloud(
+  words = names(word.frequency),
+  freq = word.frequency,
+  min.freq = 6,
+  max.words = 100,
+  random.order = FALSE,
+    colors=brewer.pal(8, "Set2"),
+  scale =c(2, .5)
+)
+
+
+```
+## Interpretation 1:
+The larger words seen in the word cloud present the most frequent words from the posts. From the visualisation, we see noticeable words like "openai", "anthropic", model, code. This mostly suggests that alot of the discussion of ai relates to mostly the companies. Furthermore, it seems that alot of the orange and green words relate to interacting with the ai and the various ways that ai is used such as "prompt", "check", "report", "help". Altogether, this visualisation displays that alot of discussion around AI is about the various capabilities of AI in supporting uses, bringing up major companies such as openai, anthropic and google.
+
+## Visualisation 2: Weighted wordcloud
+In continuation to the unweighted wordcloud, the weighted wordcloud will also be utilised. The purpose of this visualisation is to find the more distinctive posts more than the most frequent words in posts. 
+
+```{r}
+# Second visualisation (TF-IDF Weighted Word Cloud)======================
+# Applying TF-IDF weighting to tdm
+M2 = as.matrix(weightTfIdf(tdm)) 
+weighted.frequency = rowSums(M2) 
+
+# Remove any missing weights
+weighted.frequency = weighted.frequency[!is.na(weighted.frequency)] 
+
+# Sorting from highest to lowest
+weighted.frequency = sort(weighted.frequency, decreasing = TRUE) 
+# weighted.frequency[1:10] Checking order
+# Weighted word cloud
+wordcloud(
+  words = names(weighted.frequency),
+  freq = weighted.frequency,
+  max.words = 100,
+  random.order = FALSE,
+  colors = brewer.pal(8, "Dark2"),
+  scale = c(1.4, .6)
+)
+
+```
+## Interpretation 2: 
+The weighted word cloud shows a different amount of words at the top.At the top, its relatively similar to the unweighted word cloud with words such as "google" and "use" being at the top, suggesting that those terms are often repeated and important parts of AI discussion on the site. Other changes are that some words like "bill", "discount", and "source" is more prominent. While other general words like "can", "ask" and "work" are less prominent compared to the unweighted word cloud. However, a large difference seen in this visualisation is the large words that appear to be website names or URLS like "appealnewsaacblbqqui" and "opensubstackcompubthebulwa", suggesting that these words are distinctive across posts.
+
+## Visualisation 3: Manhattan Multi Dimensional Scaling
+The final visualisation being used will be Multidimensional scaling with Manhattan distance to examine the similarity of Bluesky posts. This is through putting the posts between two dimensions and examining if the posts are positioned close together or far away from each other. With points close together representing similarity, while points far away may contain more distinctive features that the common points may not have.
+
+```{r}
+# Third Visualisation MDS
+# Apply TF-IDF weighting 
+posts.matrix = t(as.matrix(weightTfIdf(tdm)))
+
+# Find posts that contain no useful weighted terms
+empties = which(rowSums(abs(posts.matrix)) == 0)
+posts.matrix = posts.matrix[-empties, ]
+
+# Normalise each post vector
+norm.posts.matrix = diag(
+  1/sqrt(rowSums(posts.matrix^2))
+) %*% posts.matrix
+
+# Calculate Manhattan distance
+D.manhattan = dist(posts.matrix, method = "manhattan")
+# Upon experimenting with the best method for MDS visualisation, manhattan was
+# revealed to be the best out of the methods used (Euclidean, maximum, cosine)
+# were methods that displayed too many overlapping points to a point where 
+# gathering information was difficult. In the end, the manhattan method was 
+# used as it displayed the largest amount of points with the least amount of
+# overlapping, alongside showing a larger range in the x axis and y axis.
+
+# Create 2D MDS
+mds.manhattan = cmdscale(D.manhattan, k = 2)
+
+# Plot
+plot(
+  mds.manhattan,
+  pch = 16,
+  cex = 0.7,
+  xlab = "MDS Coordinate 1",
+  ylab = "MDS Coordinate 2",
+  main = "MDS Bluesky Posts (Manhattan Distance)"
+)
+
+```
+
+## Interpretation 3:
+From looking at the visualisation, its found that alot of the points are close together and pushed towards the left below 1 on the x axis. Furthermore, these same findings are scattered on the y axis as well, mostly clustered within the 0 range with few posts above or below 2 and -2.Looking to the right side of the visualisation, there are few outliers past the x axis of 1, suggesting that those posts are more distinct than the rest through distinguishing words or topics that stand out from the common topics of AI. This can also suggest that the posts clustered together are similar in word use, fitting in with the common discussions of AI topics and how its used.
+
+## Overall findings and contribution to our investigations:
+These findings help explain whats being discussed about AI on Bluesky, where alot of discussions revolves around talking about the models and the practical uses of AI such as assisting users with statistics and the economy. From the wordcloud visualisations, it shows that alot of the popular words are related to the practical usage of ai and talking about the major ai companies. Furthermore, the weighted wordcloud revealed that alot of the distinguishing posts are from potential news outlets or websites. 
+Finally, the manhattan distance MDS reflects the amount of discussion around common topics, with overlapping use of words, while only few posts are outliers.
+
+Overall, these visualisations have contributed to the investigation by showing the main areas of AI discussion and the large similarity in language across the posts, with only few distinguishing posts.
 
 # 2.4 Clustering
 
