@@ -87,7 +87,6 @@ title("TF-IDF Weighted Word Cloud")
 
 
 # Third Visualisation MDS
-# This is if the second visualisation (Weighted Word Cloud) dosen't count as one
 # Apply TF-IDF weighting 
 posts.matrix = t(as.matrix(weightTfIdf(tdm)))
 
@@ -100,25 +99,26 @@ norm.posts.matrix = diag(
   1/sqrt(rowSums(posts.matrix^2))
 ) %*% posts.matrix
 
-# Calculating cosine distance
-D = dist(norm.posts.matrix, method = "euclidean")^2/2
+# Calculate Manhattan distance
+D.manhattan = dist(posts.matrix, method = "manhattan")
 
-# Creating 2D MDS projection  
-mds.posts.matrix = cmdscale(D, k = 2)
+# Create 2D MDS
+mds.manhattan = cmdscale(D.manhattan, k = 2)
 
-# Plotting the MDS visualisation
+# Plot
 plot(
-  mds.posts.matrix,
+  mds.manhattan,
   pch = 16,
   cex = 0.7,
-  xlab = "MDS 1",
-  ylab = "MDS 2",
-  main = "MDS of Bluesky Post Content"
+  xlab = "MDS Coordinate 1",
+  ylab = "MDS Coordinate 2",
+  main = "MDS Bluesky Posts (Manhattan Distance)"
 )
 
 # Interpretation:
-# The MDS visualisation dosen't show much variety, and shows that are of 
-# points on the dot are close together below 0.2 on both y and x axis.
+# The MDS visualisation dosen't show much variety, and shows that alot of the
+# points are close together and pushed towards the left below 1 on the x axis.
+# Other findings is that the points are scattered on the y axis as well.
 # There are few outliers above this range, suggesting that those posts are more
 # distinct than the rest.
 # This also can suggest that the posts clustered together are similar in word
@@ -131,3 +131,6 @@ plot(
 # From the visualisations, it shows that alot of words relating to practical 
 # usage of ai is a dominant point of discussion, and that alot of the posts use
 # overlapping vocabulary, with only few outliers.
+# Do not use euclidean (Euclidean produces direct distance, but not good for
+# my projection.)
+
