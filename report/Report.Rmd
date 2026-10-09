@@ -292,7 +292,7 @@ The chi-squared test compares these expected counts with the observed counts in 
 chi_test
 ```
 
-The chi-squared statistic was approximately 5.84 and the simulated p-value was approximately 0.054.
+The chi-squared statistic was approximately 5.84 (may vary) and the simulated p-value was approximately 0.054 (may vary).
 
 ```{r}
 chi_test$p.value
@@ -976,27 +976,21 @@ Overall, the network analysis showed that a small number of users occupied more 
 
 
 ## Overall Findings
-
+Overall, the analysis suggests that generative-AI discussions on Bluesky showed limited differences in engagement between AI topics, weak separation into meaningful text-based clusters, and a sparse follow network where only a small number of users occupied structurally important positions. The hypothesis test found no statistically significant association between AI topic and receiving at least one like, while clustering showed limited evidence of clearly distinct groups.
 
 ## Limitations
 
 ### Network Analysis Limitations
-
 This network is a sample rather than the complete Bluesky network.
 It was constructed from users appearing in the collected generative-AI posts.
-
 The most-followed author was selected as the seed user, which influences
 the shape of the network and may also affect centrality results.
-
 The network was limited to 10 first-level follows and up to 20
 second-level follows for each first-level user.
-
 Some user profiles or follow information may not have been returned
 by the Bluesky API, so the network may not include every possible connection.
-
 The filtered graph g2 only keeps users with degree > 1 for clearer
 visualisation. Centrality measures were calculated on the full graph g.
 
-
-# Conclusion
-
+## Conclusion:
+Overall, Bluesky discussions about generative AI appear to be diverse rather than clearly separated by topic or textual similarity, while the surrounding social network is sparse and concentrated around a small number of structurally important users. These findings provide a snapshot of how generative-AI discussion, engagement and interaction were structured within the collected sample.
