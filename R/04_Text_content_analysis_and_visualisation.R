@@ -7,7 +7,7 @@ library("tm")
 library("SnowballC")
 library("wordcloud")
 
-load("~/tttt/social-web-analytics/data/processed/bluesky_processed_data.RData")
+load("data/processed/bluesky_processed_data.RData")
 corpus.text = sapply(corpus,as.character) # Convert documents into text
 
 # Checking for other characters
